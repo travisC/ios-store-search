@@ -34,6 +34,8 @@ class SearchViewController: UIViewController {
         
         //Override row height
         tableView.rowHeight = 80
+        
+        searchBar.becomeFirstResponder()
     }
 
     override func didReceiveMemoryWarning() {
