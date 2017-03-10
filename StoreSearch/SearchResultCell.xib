@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,32 +22,32 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="19B-MA-pyE">
                         <rect key="frame" x="15" y="10" width="60" height="60"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="60" id="JcE-rq-YNz"/>
-                            <constraint firstAttribute="height" constant="60" id="VWd-ja-dqy"/>
+                            <constraint firstAttribute="width" constant="60" id="lhv-jE-nmc"/>
+                            <constraint firstAttribute="height" constant="60" id="txW-MC-tuE"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ocW-xf-rWH">
-                        <rect key="frame" x="90" y="15" width="222" height="22"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ocW-xf-rWH">
+                        <rect key="frame" x="90" y="23" width="214" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Artist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i1t-Pj-hiN">
-                        <rect key="frame" x="90" y="44" width="222" height="18"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Artist Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i1t-Pj-hiN">
+                        <rect key="frame" x="90" y="46.5" width="222" height="18"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="i1t-Pj-hiN" secondAttribute="trailing" id="Lof-11-W29"/>
-                    <constraint firstItem="19B-MA-pyE" firstAttribute="leading" secondItem="mJi-qV-4tr" secondAttribute="leading" constant="15" id="P4L-4c-k7A"/>
-                    <constraint firstItem="i1t-Pj-hiN" firstAttribute="leading" secondItem="19B-MA-pyE" secondAttribute="trailing" constant="15" id="Trb-Df-s9D"/>
-                    <constraint firstAttribute="trailing" secondItem="ocW-xf-rWH" secondAttribute="trailing" constant="8" id="Y1B-6B-b27"/>
-                    <constraint firstItem="ocW-xf-rWH" firstAttribute="leading" secondItem="19B-MA-pyE" secondAttribute="trailing" constant="15" id="cQC-uo-aYg"/>
-                    <constraint firstItem="19B-MA-pyE" firstAttribute="top" secondItem="mJi-qV-4tr" secondAttribute="top" constant="10" id="ilt-hy-KWf"/>
-                    <constraint firstAttribute="bottom" secondItem="i1t-Pj-hiN" secondAttribute="bottom" constant="15" id="kav-Te-eu2"/>
-                    <constraint firstItem="ocW-xf-rWH" firstAttribute="top" secondItem="mJi-qV-4tr" secondAttribute="top" constant="15" id="zIN-uz-gZk"/>
+                    <constraint firstAttribute="bottom" secondItem="i1t-Pj-hiN" secondAttribute="bottom" constant="15" id="33k-Fe-fv4"/>
+                    <constraint firstItem="ocW-xf-rWH" firstAttribute="top" secondItem="mJi-qV-4tr" secondAttribute="topMargin" constant="15" id="7Xu-FH-Cjw"/>
+                    <constraint firstAttribute="trailing" secondItem="i1t-Pj-hiN" secondAttribute="trailing" constant="8" id="C5m-yE-7Gg"/>
+                    <constraint firstItem="19B-MA-pyE" firstAttribute="top" secondItem="mJi-qV-4tr" secondAttribute="top" constant="10" id="KsE-23-rjK"/>
+                    <constraint firstItem="i1t-Pj-hiN" firstAttribute="leading" secondItem="19B-MA-pyE" secondAttribute="trailing" constant="15" id="VsT-ip-qdC"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="ocW-xf-rWH" secondAttribute="trailing" constant="8" id="cre-eq-iC6"/>
+                    <constraint firstItem="ocW-xf-rWH" firstAttribute="leading" secondItem="19B-MA-pyE" secondAttribute="trailing" constant="15" id="rKl-6P-b4s"/>
+                    <constraint firstItem="19B-MA-pyE" firstAttribute="leading" secondItem="mJi-qV-4tr" secondAttribute="leading" constant="15" id="vKV-R1-7rG"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
