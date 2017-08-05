@@ -75,12 +75,10 @@ class SearchViewController: UIViewController {
     }
     
     //Parse the JSON response
-    func parse(json: String) -> [String: Any]? {
-        guard let data = json.data(using: .utf8, allowLossyConversion: false)
-            else { return nil }
+    func parse(json data: Data) -> [String: Any]? {
         do {
-            return try JSONSerialization.jsonObject(
-                with: data, options: []) as? [String: Any]
+            return try JSONSerialization.jsonObject(with: data, options: [])
+                as? [String: Any]
         } catch {
             print("JSON Error: \(error)")
             return nil
@@ -237,30 +235,55 @@ extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if !searchBar.text!.isEmpty {
             searchBar.resignFirstResponder()
+            
             isLoading = true
             tableView.reloadData()
+            
             hasSearched = true
             searchResults = []
+            
             // 1
-            let queue = DispatchQueue.global()
+            let url = iTunesURL(searchText: searchBar.text!)
+            
             // 2
-            queue.async {
-                let url = self.iTunesURL(searchText: searchBar.text!)
-                if let jsonString = self.performStoreRequest(with: url),
-                    let jsonDictionary = self.parse(json: jsonString) {
-                    self.searchResults = self.parse(dictionary: jsonDictionary)
-                    self.searchResults.sort(by: <)
-                    // 3
-                    DispatchQueue.main.async {
-                        self.isLoading = false
-                        self.tableView.reloadData()
+            let session = URLSession.shared
+            
+            // 3
+            let dataTask = session.dataTask(with: url, completionHandler: {
+                data, response, error in
+                
+                // Test if on main thread
+                //print("On main thread? " + (Thread.current.isMainThread ? "Yes" : "No"))
+                
+                // 4
+                if let error = error {
+                    print("Failure! \(error)")
+                } else if let httpResponse = response as? HTTPURLResponse,
+                    httpResponse.statusCode == 200 {
+                    
+                    if let data = data, let jsonDictionary = self.parse(json: data) {
+                        self.searchResults = self.parse(dictionary: jsonDictionary)
+                        self.searchResults.sort(by: <)
+                        DispatchQueue.main.async {
+                            self.isLoading = false
+                            self.tableView.reloadData()
+                        }
+                        return
                     }
-                    return
+                    
+                } else {
+                    print("Failure! \(response)")
                 }
+                
                 DispatchQueue.main.async {
+                    self.hasSearched = false
+                    self.isLoading = false
+                    self.tableView.reloadData()
                     self.showNetworkError()
                 }
-            }
+            })
+            // 5
+            dataTask.resume()
         }
     }
 }
