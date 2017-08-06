@@ -153,13 +153,13 @@ class LandscapeViewController: UIViewController {
         var x = marginX
         for (index, searchResult) in searchResults.enumerated() {
             // 1
-            //let button = UIButton(type: .system)
-            //button.backgroundColor = UIColor.white
-            //button.setTitle("\(index)", for: .normal)
             let button = UIButton(type: .custom)
             button.setBackgroundImage(UIImage(named: "LandscapeButton"),
                                       for: .normal)
             downloadImage(for: searchResult, andPlaceOn: button)
+            button.tag = 2000 + index
+            button.addTarget(self, action: #selector(buttonPressed),
+                             for: .touchUpInside)
             
             // 2
             button.frame = CGRect(
@@ -188,6 +188,21 @@ class LandscapeViewController: UIViewController {
         pageControl.numberOfPages = numPages
         pageControl.currentPage = 0
         
+    }
+    
+    func buttonPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "ShowDetail", sender: sender)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowDetail" {
+            if case .results(let list) = search.state {
+                let detailViewController = segue.destination
+                    as! DetailViewController
+                let searchResult = list[(sender as! UIButton).tag - 2000]
+                detailViewController.searchResult = searchResult
+            }
+        }
     }
     
     private func downloadImage(for searchResult: SearchResult,
