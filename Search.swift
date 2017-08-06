@@ -6,32 +6,52 @@
 //  Copyright © 2017 Travis Cunningham. All rights reserved.
 //
 
+import UIKit
 import Foundation
 
 typealias SearchComplete = (Bool) -> Void
 
 class Search {
-    var searchResults: [SearchResult] = []
-    var hasSearched = false
-    var isLoading = false
+    
+    enum State {
+        case notSearchedYet
+        case loading
+        case noResults
+        case results([SearchResult])
+    }
+    
+    private(set) var state: State = .notSearchedYet
+    
     private var dataTask: URLSessionDataTask? = nil
     
+    enum Category: Int {
+        case all = 0
+        case music = 1
+        case software = 2
+        case ebooks = 3
+        
+        var entityName: String {
+            switch self {
+            case .all: return ""
+            case .music: return "musicTrack"
+            case .software: return "software"
+            case .ebooks: return "ebook"
+            }
+        }
+    }
     
-    func performSearch(for text: String,
-                       category: Int,
+    func performSearch(for text: String, category: Category,
                        completion: @escaping SearchComplete) {
         if !text.isEmpty {
             dataTask?.cancel()
-            isLoading = true
-            hasSearched = true
-            searchResults = []
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            state = .loading // add this
             let url = iTunesURL(searchText: text, category: category)
             let session = URLSession.shared
             dataTask = session.dataTask(with: url, completionHandler: {
                 data, response, error in
-                
+                self.state = .notSearchedYet // add this
                 var success = false
-                
                 if let error = error as? NSError, error.code == -999 {
                     return // Search was cancelled
                 }
@@ -39,17 +59,18 @@ class Search {
                     httpResponse.statusCode == 200,
                     let jsonData = data,
                     let jsonDictionary = self.parse(json: jsonData) {
-                    self.searchResults = self.parse(dictionary: jsonDictionary)
-                    self.searchResults.sort(by: <)
-                    print("Success!")
-                    self.isLoading = false
+                    // change this entire section
+                    var searchResults = self.parse(dictionary: jsonDictionary)
+                    if searchResults.isEmpty {
+                        self.state = .noResults
+                    } else {
+                        searchResults.sort(by: <)
+                        self.state = .results(searchResults)
+                    }
                     success = true
                 }
-                if !success { // new
-                    self.hasSearched = false
-                    self.isLoading = false
-                }
-                DispatchQueue.main.async { // new
+                DispatchQueue.main.async {
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
                     completion(success)
                 }
             })
@@ -59,14 +80,8 @@ class Search {
     
     
     //Set URL
-    func iTunesURL(searchText: String, category: Int) -> URL {
-        let entityName: String
-        switch category {
-        case 1: entityName = "musicTrack"
-        case 2: entityName = "software"
-        case 3: entityName = "ebook"
-        default: entityName = ""
-        }
+    private func iTunesURL(searchText: String, category: Category) -> URL {
+        let entityName = category.entityName
         
         let escapedSearchText = searchText.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
         let urlString = String(format: "https://itunes.apple.com/search?term=%@&limit=200&entity=%@", escapedSearchText, entityName)
@@ -76,7 +91,7 @@ class Search {
     }
     
     //Parse the JSON response
-    func parse(json data: Data) -> [String: Any]? {
+    private func parse(json data: Data) -> [String: Any]? {
         do {
             return try JSONSerialization.jsonObject(with: data, options: [])
                 as? [String: Any]
@@ -86,7 +101,7 @@ class Search {
         }
     }
     
-    func parse(dictionary: [String: Any]) -> [SearchResult] {
+    private func parse(dictionary: [String: Any]) -> [SearchResult] {
         // 1
         guard let array = dictionary["results"] as? [Any] else {
             print("Expected 'results' array")
@@ -123,7 +138,7 @@ class Search {
     }
     
     
-    func parse(track dictionary: [String: Any]) -> SearchResult {
+    private func parse(track dictionary: [String: Any]) -> SearchResult {
         let searchResult = SearchResult()
         searchResult.name = dictionary["trackName"] as! String
         searchResult.artistName = dictionary["artistName"] as! String
@@ -141,7 +156,7 @@ class Search {
         return searchResult
     }
     
-    func parse(audiobook dictionary: [String: Any]) -> SearchResult {
+    private func parse(audiobook dictionary: [String: Any]) -> SearchResult {
         let searchResult = SearchResult()
         searchResult.name = dictionary["collectionName"] as! String
         searchResult.artistName = dictionary["artistName"] as! String
@@ -159,7 +174,7 @@ class Search {
         return searchResult
     }
     
-    func parse(software dictionary: [String: Any]) -> SearchResult {
+    private func parse(software dictionary: [String: Any]) -> SearchResult {
         let searchResult = SearchResult()
         searchResult.name = dictionary["trackName"] as! String
         searchResult.artistName = dictionary["artistName"] as! String
@@ -177,7 +192,7 @@ class Search {
         return searchResult
     }
     
-    func parse(ebook dictionary: [String: Any]) -> SearchResult {
+    private func parse(ebook dictionary: [String: Any]) -> SearchResult {
         let searchResult = SearchResult()
         searchResult.name = dictionary["trackName"] as! String
         searchResult.artistName = dictionary["artistName"] as! String
