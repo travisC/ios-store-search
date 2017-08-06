@@ -159,7 +159,7 @@ class LandscapeViewController: UIViewController {
             downloadTask.resume()
         }
         
-        downloadTasks.append(downloadTask)
+        downloadTasks.append(downloadTasks)
     }
     
 
