@@ -261,6 +261,11 @@ class SearchViewController: UIViewController {
             addChildViewController(controller)
             coordinator.animate(alongsideTransition: { _ in
                 controller.view.alpha = 1
+                self.searchBar.resignFirstResponder()
+                if self.presentedViewController != nil {
+                    self.dismiss(animated: true, completion: nil)
+                }
+                
                 }, completion: { _ in
                     controller.didMove(toParentViewController: self)
             })
@@ -383,12 +388,6 @@ extension SearchViewController: UITableViewDataSource {
                 withIdentifier: TableViewCellIdentifiers.searchResultCell,
                 for: indexPath) as! SearchResultCell
             let searchResult = searchResults[indexPath.row]
-            //cell.nameLabel.text = searchResult.name
-            //if searchResult.artistName.isEmpty {
-                //cell.artistNameLabel.text = "Unknown"
-            //} else {
-                //cell.artistNameLabel.text = String(format: "%@ (%@)", searchResult.artistName, kindForDisplay(searchResult.kind))
-            //}
             
             cell.configure(for: searchResult)
             
