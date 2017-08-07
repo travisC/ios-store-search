@@ -50,26 +50,36 @@ class Search {
             let session = URLSession.shared
             dataTask = session.dataTask(with: url, completionHandler: {
                 data, response, error in
-                self.state = .notSearchedYet // add this
+                
+                var newState = State.notSearchedYet   // XXX
                 var success = false
+                
                 if let error = error as? NSError, error.code == -999 {
-                    return // Search was cancelled
+                    // XXX (this bit may actually not matter since we only cancel to
+                    // start a new serarch anyway)
+                    DispatchQueue.main.sync {
+                        self.state = .notSearchedYet   // XXX
+                    }
+                    return   // Search was cancelled
                 }
+                
                 if let httpResponse = response as? HTTPURLResponse,
                     httpResponse.statusCode == 200,
                     let jsonData = data,
                     let jsonDictionary = self.parse(json: jsonData) {
-                    // change this entire section
+                    
                     var searchResults = self.parse(dictionary: jsonDictionary)
                     if searchResults.isEmpty {
-                        self.state = .noResults
+                        newState = .noResults   // XXX
                     } else {
                         searchResults.sort(by: <)
-                        self.state = .results(searchResults)
+                        newState = .results(searchResults)  // XXX
                     }
                     success = true
                 }
+                
                 DispatchQueue.main.async {
+                    self.state = newState                  // XXX
                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
                     completion(success)
                 }
