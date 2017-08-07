@@ -54,7 +54,7 @@ class Search {
                 var newState = State.notSearchedYet   // XXX
                 var success = false
                 
-                if let error = error as? NSError, error.code == -999 {
+                if let error = error as NSError?, error.code == -999 {
                     // XXX (this bit may actually not matter since we only cancel to
                     // start a new serarch anyway)
                     DispatchQueue.main.sync {
